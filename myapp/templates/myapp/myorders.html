@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Client Orders{% endblock %}
+{% block myhdg %} Hello {{ user }} {% endblock %}
+{% block body_block %}
+    {% if orders %}
+        <h3>{{ msg }}</h3>
+        <ol>
+            {% for order in orders %}
+                <li>{{ order }}</li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <strong>{{ msg }}</strong>
+    {% endif %}
+{% endblock %}

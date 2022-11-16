@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Detail{% endblock %}
+{% block myhdg %} Hello The-Four {% endblock %}
+{% block body_block %}
+    {% if category %}
+        <h4>Category Name - {{ category.name }}</h4>
+        <h4>Category Warehouse - {{ category.warehouse }}</h4>
+        <h3>List of products for the {{ category.name }} category</h3>
+        <ol>
+            {% for product in products %}
+                <li> {{ product.name }} </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <strong>There are no available categories!</strong>
+    {% endif %}
+{#    <p><a href="{% url 'myapp:index' %}">Index page</a></p>#}
+{% endblock %}

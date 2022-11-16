@@ -1,0 +1,22 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Product Detail{% endblock %}
+{% block myhdg %} Hello The-Four {% endblock %}
+{% block body_block %}
+    {% if product %}
+        <h3>Product Name - {{ product.name }}</h3>
+        <p>Number of people interested in - {{ product.interested }}</p>
+        <p>Price of the product - {{ product.price }}</p>
+
+        <div class="form-group">
+        <h3 style="text-align: left;">Interest form</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Interested</button>
+        </form>
+        </div>
+    {% endif %}
+    {% if msg %}
+        <h3>{{ msg }}</h3>
+    {% endif %}
+{% endblock %}

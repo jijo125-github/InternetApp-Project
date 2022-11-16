@@ -1,0 +1,11 @@
+{% extends 'myapp/base.html' %}
+{% block title %}About{% endblock %}
+{% block myhdg %} Hello {{ user }} {% endblock %}
+{% block body_block %}
+    <h3>This is an Online Store App</h3>
+    {% if no_of_times_visited %}
+        <p>Number of times this page visited - {{ no_of_times_visited }}</p>
+    {% endif %}
+    {#    <p><a href="{% url 'myapp:index' %}">Index page using URL namespacing</a></p>#}
+    {#    <p><a href="/myapp/">Index page using hardcoded URL</a></p>#}
+{% endblock %}

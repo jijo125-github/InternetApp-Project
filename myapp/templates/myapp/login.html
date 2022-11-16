@@ -1,0 +1,14 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Login Page{% endblock %}
+{% block myhdg %} Hello The-Four {% endblock %}
+{% block body_block %}
+    <div class="form-group">
+        <h3 style="text-align: left;">Login</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" id="username" placeholder="User name"/>
+            <input type="password" name="password" id="password" placeholder="Password"/>
+            <button type="submit" value="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}

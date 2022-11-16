@@ -1,0 +1,34 @@
+{% extends 'myapp/base.html' %}
+{% block myhdg %}
+    Hello {{ user }}
+{% endblock %}
+{% block body_block %}
+    {% if user.is_active %}
+        <p>Last Login - {{ last_login }}</p>
+        {% if cat_list %}
+            <h3>List of Categories</h3>
+            <ol>
+                {% for cat in cat_list %}
+                    <li><a href="{{ cat.id }}/">{{ cat.name }}</a></li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <strong>There are no available categories!</strong>
+        {% endif %}
+    {% else %}
+        {{ msg }}
+    {% endif %}
+    {#    <p><a href="{% url 'myapp:about' %}">About page</a></p>#}
+{% endblock %}
+{% block link_block %}
+    <li class="hbar1"><a href="/myapp/about/">Find out about this
+        site</a></li>
+    <li class="hbar1"><a href="{% url 'myapp:products' %}">Click here to
+        see products</a></li>
+    {% if user.is_authenticated %}
+        <li class="hbar1"><a href="{% url 'myapp:logout' %}">Logout</a></li>
+    {% else %}
+        <li class="hbar1"><a href="{% url 'myapp:login' %}">Login</a></li>
+    {% endif %}
+    <li class="hbar1"><a href="{% url 'myapp:orders' %}">Products Ordered</a></li><br/>
+{% endblock link_block %}
