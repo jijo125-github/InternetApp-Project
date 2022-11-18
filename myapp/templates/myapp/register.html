@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Register Page{% endblock %}
+{#{% block myhdg %} Hello The-Four {% endblock %}#}
+{% block body_block %}
+    <div class="form-group">
+        <h3 style="text-align: left;">Register</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ register_form }}
+            <button class="btn btn-primary" type="submit">Register</button>
+        </form>
+    </div>
+{% endblock %}
+{% block link_block %}
+    <li class="hbar1"><a href="{% url 'myapp:login' %}">Login if already registered</a></li>
+    <br/>
+{% endblock link_block %}

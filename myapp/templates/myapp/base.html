@@ -9,7 +9,7 @@
 <div>
     <h1>{% block myhdg %}
         {% if user.is_authenticated %}
-            Hello {{ user.username }}
+            Hello {{ user.first_name }}
         {% else %}
             Hello The-Four
         {% endif %}
@@ -26,8 +26,10 @@
                 see products</a></li>
             {% if user.is_authenticated %}
                 <li class="hbar1"><a href="{% url 'myapp:logout' %}">Logout</a></li>
+                <li class="hbar1"><a href="{% url 'myapp:orders' %}">Products Ordered</a></li>
             {% else %}
                 <li class="hbar1"><a href="{% url 'myapp:login' %}">Login</a></li>
+                <li class="hbar1"><a href="{% url 'myapp:register' %}">Register</a></li>
             {% endif %}
             <li class="hbar1"><a href="{% url 'myapp:index' %}">Click here to
                 return to main page</a><br/></li>

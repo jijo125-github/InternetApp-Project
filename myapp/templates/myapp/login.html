@@ -12,3 +12,8 @@
         </form>
     </div>
 {% endblock %}
+{% block link_block %}
+    <li class="hbar1"><a href="{% url 'myapp:register' %}">Register</a></li>
+    <li class="hbar1"><a href="{% url 'myapp:login' %}">Login</a></li>
+    <br/>
+{% endblock %}

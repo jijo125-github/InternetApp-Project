@@ -23,6 +23,7 @@ def interested_in(obj):
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'city', interested_in)
+    interested_in.short_description = 'Interested in'
 
     class Meta:
         model = Client

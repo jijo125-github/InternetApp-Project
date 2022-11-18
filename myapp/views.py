@@ -3,12 +3,26 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponseRedirect
 from django.urls import reverse
 from .models import Category, Product, Client, Order
-from .forms import OrderForm, InterestForm
+from .forms import OrderForm, InterestForm, RegisterForm
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # Create your views here.
+
+def user_register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful.")
+            return redirect("myapp:login")
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = RegisterForm()
+    return render(request=request, template_name="myapp/register.html", context={"register_form": form})
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -21,7 +35,7 @@ def user_login(request):
                 cur_datetime = datetime.now()
                 request.session['last_login'] = str(cur_datetime)
                 request.session.set_expiry(3600)
-                return HttpResponseRedirect(reverse('myapp:index'))
+                return HttpResponseRedirect(reverse('myapp:orders'))
             else:
                 return HttpResponse('Your account is disabled.')
         else:
@@ -165,10 +179,11 @@ def productdetail(request, prod_id):
         return render(request, 'myapp/productdetail.html', {'msg': msg})
 
 
-@login_required
 def myorders(request):
     try:
         user = request.user
+        if not user.is_authenticated:
+            return redirect('myapp:login')
         client = Client.objects.get(username=user.username)
         orders = Order.objects.filter(client=client)
         distinct_orders = []
