@@ -1,12 +1,13 @@
 from datetime import datetime
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .models import Category, Product, Client, Order
-from .forms import OrderForm, InterestForm, RegisterForm
-from django.contrib import messages
+from .forms import OrderForm, InterestForm, RegisterForm, UpdateUserForm, UpdateProfileForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -15,12 +16,12 @@ def user_register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful.")
+            form.save(commit=True)
             return redirect("myapp:login")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
-    form = RegisterForm()
+        else:
+            print('form invalid')
+    else:
+        form = RegisterForm()
     return render(request=request, template_name="myapp/register.html", context={"register_form": form})
 
 
@@ -50,10 +51,22 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('myapp:login'))
 
 
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'myapp/password_reset.html'
+    email_template_name = 'myapp/password_reset_email.html'
+    subject_template_name = 'myapp/password_reset_subject'
+    success_message = "We've emailed you instructions for setting your password, " \
+                      "if an account exists with the email you entered. You should receive them shortly." \
+                      " If you don't receive an email, " \
+                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('myapp:login')
+
+
 def index(request):
     cat_list = Category.objects.all().order_by('id')[:10]
     msg = ""
     last_login = "your logged out"
+    # print(request.user)
     if request.session.get('last_login', False):
         last_login = datetime.strptime(request.session.get('last_login').split(".")[0], '%Y-%m-%d %H:%M:%S')
         # print(last_login, type(last_login))
@@ -75,30 +88,9 @@ def index(request):
         'msg': msg
     }
     return render(request, 'myapp/index.html', context=context)
-    # product_list = Product.objects.all().order_by('-price')[:5]
-    # response = HttpResponse()
-    # heading1 = '<p>' + 'List of categories: ' + '</p>'
-    # response.write(heading1)
-    #
-    # for category in cat_list:
-    #     para = '<p>' + str(category.id) + ': ' + str(category) + '</p>'
-    #     response.write(para)
-    # response.write(content='<br>')
-    #
-    # heading2 = '<p>' + 'List of products: ' + '</p>'
-    # response.write(heading2)
-    #
-    # for product in product_list:
-    #     para = '<p>' + str(product.id) + ': ' + str(product) + '</p>'
-    #     response.write(para)
-    # return response
 
 
 def about(request):
-    # return HttpResponse("This is an Online Store APP")
-    # return render(request, 'myapp/about0.html')
-    # return render(request, 'myapp/about.html')
-
     if 'about_visits' in request.COOKIES:
         count_visited = int(request.COOKIES['about_visits'])
         count_visited += 1
@@ -114,15 +106,6 @@ def detail(request, cat_no):
     products = Product.objects.filter(category=category)
     # return render(request, 'myapp/detail0.html', {'category': category, 'products': products})
     return render(request, 'myapp/detail.html', {'category': category, 'products': products})
-    # detail_response = HttpResponse()
-    # heading = '<p>' + 'Warehouse location - ' + category.warehouse + '</p>'
-    # heading += '<p>' + 'List of products for the category:' + '</p>'
-    # detail_response.write(heading)
-    #
-    # for product in products:
-    #     para = '<p>' + str(product.id) + ': ' + str(product) + '</p>'
-    #     detail_response.write(para)
-    # return detail_response
 
 
 def products(request):
@@ -198,3 +181,25 @@ def myorders(request):
     except Client.DoesNotExist:
         msg = 'You are not a registered client'
         return render(request, 'myapp/myorders.html', {'msg': msg})
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        print(profile_form)
+        print(request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            # messages.success(request, 'Your profile is updated successfully')
+            return redirect('myapp:users-profile')
+        else:
+            print("invalid")
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        profile_form = UpdateProfileForm(instance=request.user.profile)
+
+    return render(request, 'myapp/profile.html', {'user_form': user_form, 'profile_form': profile_form})

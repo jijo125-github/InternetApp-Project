@@ -15,5 +15,7 @@
 {% block link_block %}
     <li class="hbar1"><a href="{% url 'myapp:register' %}">Register</a></li>
     <li class="hbar1"><a href="{% url 'myapp:login' %}">Login</a></li>
+    <li class="hbar1"><a href="{% url 'myapp:password_reset' %}"><i>Forgot Password?</i></a></li>
+{#    <li class="hbar1"><a href="{% url 'myapp:password_change' %}"><i>Change Password?</i></a></li>#}
     <br/>
 {% endblock %}

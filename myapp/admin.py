@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Client, Order
+from .models import Category, Product, Client, Order, Profile
 
 
 def increase_product_stock(request, queryset):
@@ -35,4 +35,5 @@ class ClientAdmin(admin.ModelAdmin):
 admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Client, ClientAdmin)
-admin.site.register(Order)
+admin.site.register(Order),
+admin.site.register(Profile)
